@@ -26,7 +26,7 @@ async function scrapeSaavn() {
 });
   const page = await browser.newPage();
   await page.goto("https://www.jiosaavn.com", {
-    waitUntil: load,
+    waitUntil: 'load',
     timeout: 0
   });
 
