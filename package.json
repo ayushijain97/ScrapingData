@@ -3,5 +3,24 @@
     "express": "^4.17.1",
     "puppeteer": "^10.1.0",
     "puppeteer-core": "^10.1.0"
-  }
+  },
+  "name": "puppeteer",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ayushijain97/ScrapingData.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ayushijain97/ScrapingData/issues"
+  },
+  "homepage": "https://github.com/ayushijain97/ScrapingData#readme",
+  "description": ""
 }

@@ -1,7 +1,6 @@
 const express = require('express')
 const puppeteer = require("puppeteer")
 const app = express()
-const port = 3000
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
@@ -12,9 +11,9 @@ app.get("/data", async function(req, res) {
   res.send(data);
 });
 
-app.listen(port, () => {
+app.listen(process.env.PORT || 3000, () => {
   console.log(`Example app listening at http://localhost:${port}`);
-})
+});
 
 async function scrapeSaavn() {
     const browser = await puppeteer.launch({devtools: true});
