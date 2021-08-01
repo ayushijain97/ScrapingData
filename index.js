@@ -16,8 +16,8 @@ app.listen(port, () => {
 });
 
 async function scrapeSaavn() {
-    const browser = await puppeteer.launch({devtools: true});
-  // const browser = await puppeteer.launch();
+    // const browser = await puppeteer.launch({devtools: true});
+  const browser = await puppeteer.launch();
 
   const page = await browser.newPage();
   await page.goto("https://www.jiosaavn.com");
