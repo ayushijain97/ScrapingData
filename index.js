@@ -1,13 +1,18 @@
-const express = require('express')
+const express = require('express');
+const { ConnectionCheckOutFailedEvent } = require('mongodb');
 const puppeteer = require("puppeteer")
+const mongo = require("./mongodb.js");
 const app = express()
 let port = process.env.PORT || 3000
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-app.get("/data", async function(req, res) {
+app.get("/data/:title", async function(req, res) {
+  // const data = await mongo.fetchData(req.params.title);
+  // res.send(data);
   let data = await scrapeSaavn();
+  console.log(data);
   res.send(data);
 });
 
@@ -16,14 +21,9 @@ app.listen(port, () => {
 });
 
 async function scrapeSaavn() {
-    // const browser = await puppeteer.launch({devtools: true});
+    const browser = await puppeteer.launch({devtools: true});
   // const browser = await puppeteer.launch();
-  const browser = await puppeteer.launch({
-  args: [
-    '--no-sandbox',
-    '--disable-setuid-sandbox',
-  ],
-});
+
   const page = await browser.newPage();
   await page.goto("https://www.jiosaavn.com", {
     waitUntil: 'load',
