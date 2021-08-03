@@ -21,6 +21,26 @@ async function run() {
 }
 run().catch(console.dir);
 
+async function createUser(user) {
+  console.log(`Creating user : ${user}`);
+  const data = await client
+    .db("acme")
+    .collection("users")
+    .insertOne(user);
+  console.log(`Created user successfully ${data}`);
+}
+async function getUser(userName){
+  console.log(`getting user : ${userName}`);
+  const data = await client
+    .db("acme")
+    .collection("users")
+    .find({
+      name:userName,
+    })
+    .toArray();
+    return data ? data[0] : "Not Found";
+}
+
 async function fetchData(title) {
     console.log(`Fetching data for ${title}`);
      const data = await client
@@ -37,5 +57,7 @@ async function fetchData(title) {
 
 module.exports = {
     run,
-    fetchData
+    fetchData,
+    createUser,
+    getUser
 }
