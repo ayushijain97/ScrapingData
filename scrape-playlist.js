@@ -1,5 +1,7 @@
 var request = require("request");
 const mongo = require("./mongodb.js");
+const { v4: uuidv4 } = require("uuid");
+
 
   function checkingType(url){
 
@@ -14,7 +16,8 @@ const mongo = require("./mongodb.js");
       }
   }
 
-async function scrape(playlistUrl) {
+async function scrape(playlistMetadata) {
+  const playlistUrl = playlistMetadata.href;
   console.log(`fetching playlist ${playlistUrl}`);
   var clientServerOptions ={
     uri: `https://apg-saavn-api.herokuapp.com/${checkingType(playlistUrl)}/?q=${playlistUrl}`,
@@ -25,7 +28,14 @@ async function scrape(playlistUrl) {
   };
   const playlist = await makeRequest(clientServerOptions);
   try{
-    mongo.savePlaylist(JSON.parse(playlist));
+    const parsePlaylist = JSON.parse(playlist);
+    const playlistUUID = uuidv4();
+    parsePlaylist.playlistID = playlistUUID;
+    mongo.savePlaylist(parsePlaylist);
+    console.log(parsePlaylist.image);
+    playlistMetadata.image = parsePlaylist.image;
+    playlistMetadata.playlistID = playlistUUID;
+    mongo.saveMetadata(playlistMetadata);
   }catch(err){
     console.log(`Error while parsing playlist ${playlistUrl}`);
     console.log(err);

@@ -12,12 +12,23 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
+app.get("/metadata", async function(req, res) {
+   const metadata=await mongo.fetchPlaylistMetadata();
+      res.send(metadata);
+});
+   
+app.get("/playlist/:playlistID", async function (req, res) {
+  const playlist = await mongo.fetchPlaylist(req.params.playlistID);
+  res.send(playlist);
+});
+
 app.get("/scrapeSaavn", async function(req, res) {
    saavnHomepage = await scrapeSaavn();
   console.log(`Total url from saavn ${saavnHomepage.length}`);
    mongo.deleteAllPlaylist();
+   mongo.deleteAllMetadata();
   for (let i = 0; i < saavnHomepage.length; i++) {
-    let playlistDetails = await playlist.scrape(saavnHomepage[i].href);
+    let playlistDetails = await playlist.scrape(saavnHomepage[i]);
     // return res.send(playlistDetails);
   }
   res.send(`Requested accepted successfully`);
@@ -60,7 +71,7 @@ async function scrapeSaavn() {
         const innerHTMLOfImg = link.innerHTML;
         var wrapper = document.createElement("div");
         wrapper.innerHTML = innerHTMLOfImg;
-        return { href: link.href, img: wrapper.firstElementChild.src, title: "" };
+        return { href: link.href };
     });
     return urls;
   });
