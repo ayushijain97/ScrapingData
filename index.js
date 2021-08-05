@@ -1,15 +1,49 @@
-const express = require('express')
+const express = require('express');
+const { ConnectionCheckOutFailedEvent } = require('mongodb');
 const puppeteer = require("puppeteer")
+const mongo = require("./mongodb.js");
+const playlist=require("./scrape-playlist");
 const app = express()
+app.use(express.urlencoded());
+app.use(express.json());
+let saavnHomepage;
 let port = process.env.PORT || 3000
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-app.get("/data", async function(req, res) {
-  let data = await scrapeSaavn();
-  res.send(data);
+app.get("/metadata", async function(req, res) {
+   const metadata=await mongo.fetchPlaylistMetadata();
+      res.send(metadata);
 });
+   
+app.get("/playlist/:playlistID", async function (req, res) {
+  const playlist = await mongo.fetchPlaylist(req.params.playlistID);
+  res.send(playlist);
+});
+
+app.get("/scrapeSaavn", async function(req, res) {
+   saavnHomepage = await scrapeSaavn();
+  console.log(`Total url from saavn ${saavnHomepage.length}`);
+   mongo.deleteAllPlaylist();
+   mongo.deleteAllMetadata();
+  for (let i = 0; i < saavnHomepage.length; i++) {
+    let playlistDetails = await playlist.scrape(saavnHomepage[i]);
+    // return res.send(playlistDetails);
+  }
+  res.send(`Requested accepted successfully`);
+});
+/**
+ *  GET /users  (return all users)     app.get(/users)
+ *  GET /users/user_123 (return single user) app.get(/users/:userId)
+ *  DELETE /users/user_123 (delete single user) app.delete(/users/:userId)
+ * 
+ * 
+ */
+
+app.get("/api", async function(req, res) {
+    console.log(req);
+})
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
@@ -17,13 +51,8 @@ app.listen(port, () => {
 
 async function scrapeSaavn() {
     // const browser = await puppeteer.launch({devtools: true});
-  // const browser = await puppeteer.launch();
-  const browser = await puppeteer.launch({
-  args: [
-    '--no-sandbox',
-    '--disable-setuid-sandbox',
-  ],
-});
+  const browser = await puppeteer.launch();
+
   const page = await browser.newPage();
   await page.goto("https://www.jiosaavn.com", {
     waitUntil: 'load',
@@ -42,7 +71,7 @@ async function scrapeSaavn() {
         const innerHTMLOfImg = link.innerHTML;
         var wrapper = document.createElement("div");
         wrapper.innerHTML = innerHTMLOfImg;
-        return { href: link.href, img: wrapper.firstElementChild.src, title: "" };
+        return { href: link.href };
     });
     return urls;
   });
