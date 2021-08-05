@@ -2,59 +2,26 @@ const express = require('express');
 const { ConnectionCheckOutFailedEvent } = require('mongodb');
 const puppeteer = require("puppeteer")
 const mongo = require("./mongodb.js");
+const playlist=require("./scrape-playlist");
 const app = express()
 app.use(express.urlencoded());
 app.use(express.json());
+let saavnHomepage;
 let port = process.env.PORT || 3000
-let users = []; // Empty database
-// let port = 3000;
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-app.get("/data/:title", async function(req, res) {
-  // const data = await mongo.fetchData(req.params.title);
-  // res.send(data);
-  let data = await scrapeSaavn();
-  // console.log(data);
-  return res.send(data);
+app.get("/scrapeSaavn", async function(req, res) {
+   saavnHomepage = await scrapeSaavn();
+  console.log(`Total url from saavn ${saavnHomepage.length}`);
+   mongo.deleteAllPlaylist();
+  for (let i = 0; i < saavnHomepage.length; i++) {
+    let playlistDetails = await playlist.scrape(saavnHomepage[i].href);
+    // return res.send(playlistDetails);
+  }
+  res.send(`Requested accepted successfully`);
 });
-
-// Get single user by id
-app.get("/users/:userName", async function (req, res) {
-  const user= await mongo.getUser(req.params.userName);
-   return res.send(user);
-});
-
-// Get all users
-app.get("/users", async function (req, res) {
-  res.setHeader("Content-Type", "application/json");
-  return res.send(JSON.stringify(users));
-});
-
-app.post("/users", async function (req, res) {
-  console.log("Creating user", req.body);
-  users.push(req.body);
-   await mongo.createUser(req.body);
-  res.send("User Created successfully "+ users.length);
-});
-
-app.delete("/users/:userId", async function (req, res) {
-  const userId = req.params.userId - 1;
-  users.splice(userId, 1);
-  console.log("User deleted successfully");
-  res.send();
-});
-
-app.put("/users/:userId", async function (req, res) {
-  const userId = req.params.userId - 1;
-  const updatedUser = req.body;
-  console.log(`Updating ${users[userId]} with ${updatedUser}`);
-  users[userId] = updatedUser;
-  res.send();
-});
-
-
 /**
  *  GET /users  (return all users)     app.get(/users)
  *  GET /users/user_123 (return single user) app.get(/users/:userId)
@@ -73,7 +40,7 @@ app.listen(port, () => {
 
 async function scrapeSaavn() {
     // const browser = await puppeteer.launch({devtools: true});
-  // const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch();
 
   const page = await browser.newPage();
   await page.goto("https://www.jiosaavn.com", {

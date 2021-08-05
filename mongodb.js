@@ -2,7 +2,7 @@ const { MongoClient } = require("mongodb");
 
 
 // Connection URI
-const uri = "mongodb://127.0.0.1:27017/admin";
+const uri = "mongodb://127.0.0.1:/admin";
 // Create a new MongoClient
 const client = new MongoClient(uri);
 let db;
@@ -21,43 +21,35 @@ async function run() {
 }
 run().catch(console.dir);
 
-async function createUser(user) {
-  console.log(`Creating user : ${user}`);
-  const data = await client
-    .db("acme")
-    .collection("users")
-    .insertOne(user);
-  console.log(`Created user successfully ${data}`);
+async function savePlaylist(playlist) {
+    // console.log(`Creating user : ${playlist}`);
+    const data = await client.db("ayushi-music").collection("playlist").insertOne(playlist);
+    console.log(`Created Playlist successfully ${data}`); 
 }
+
+async function deleteAllPlaylist(playlist) {
+  // console.log(`Creating user : ${playlist}`);
+  const data = await client
+    .db("ayushi-music")
+    .collection("playlist")
+    .deleteMany({});
+  console.log(`Deleted all Playlists successfully ${data}`);
+}
+
 async function getUser(userName){
   console.log(`getting user : ${userName}`);
   const data = await client
-    .db("acme")
-    .collection("users")
+    .db("ayushi-music")
+    .collection("query")
     .find({
       name:userName,
     })
     .toArray();
     return data ? data[0] : "Not Found";
-}
-
-async function fetchData(title) {
-    console.log(`Fetching data for ${title}`);
-     const data = await client
-       .db("acme")
-       .collection("posts")
-       .find({
-         title: title,
-       })
-       .toArray();
-     console.log(data);
-     return data ? data[0] : 'Not Found';
-}
-
+  }
 
 module.exports = {
-    run,
-    fetchData,
-    createUser,
-    getUser
-}
+  run,
+  savePlaylist,
+  deleteAllPlaylist,
+};

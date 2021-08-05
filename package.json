@@ -3,7 +3,8 @@
     "express": "^4.17.1",
     "mongodb": "^4.0.1",
     "puppeteer": "^10.1.0",
-    "puppeteer-core": "^10.1.0"
+    "puppeteer-core": "^10.1.0",
+    "request": "^2.88.2"
   },
   "name": "puppeteer",
   "version": "1.0.0",
