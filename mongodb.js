@@ -1,8 +1,12 @@
 const { MongoClient } = require("mongodb");
-
+let dbUserName = process.env.MONGO_USER;
+let dbPassword = process.env.MONGO_PASSWORD;
+let dbURI = process.env.MONGO_URI;
 
 // Connection URI
-const uri = "mongodb://127.0.0.1:/admin";
+// const uri = "mongodb://127.0.0.1:/admin";
+const uri =
+  `mongodb+srv://${dbUserName}:${dbPassword}@${dbURI}`;
 // Create a new MongoClient
 const client = new MongoClient(uri);
 let db;
