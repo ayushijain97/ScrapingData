@@ -2,8 +2,20 @@ const express = require('express');
 const { ConnectionCheckOutFailedEvent } = require('mongodb');
 const puppeteer = require("puppeteer")
 const mongo = require("./mongodb.js");
+var cors = require("cors");
 const playlist=require("./scrape-playlist");
 const app = express()
+
+app.use(
+  cors({
+    allowedHeaders: ["sessionId", "Content-Type"],
+    exposedHeaders: ["sessionId"],
+    origin: "*",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    preflightContinue: false,
+  })
+);
+
 app.use(express.urlencoded());
 app.use(express.json());
 let saavnHomepage;
