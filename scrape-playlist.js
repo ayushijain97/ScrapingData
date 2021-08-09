@@ -35,6 +35,7 @@ async function scrape(playlistMetadata) {
     console.log(parsePlaylist.image);
     playlistMetadata.image = parsePlaylist.image;
     playlistMetadata.playlistID = playlistUUID;
+    playlistMetadata.singers = parsePlaylist.singers;
     mongo.saveMetadata(playlistMetadata);
   }catch(err){
     console.log(`Error while parsing playlist ${playlistUrl}`);
