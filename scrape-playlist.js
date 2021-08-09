@@ -35,7 +35,12 @@ async function scrape(playlistMetadata) {
     console.log(parsePlaylist.image);
     playlistMetadata.image = parsePlaylist.image;
     playlistMetadata.playlistID = playlistUUID;
-    playlistMetadata.singers = parsePlaylist.singers;
+    if(parsePlaylist.primary_artists)
+    {
+      playlistMetadata.singers = parsePlaylist.primary_artists;
+    }else if (!parsePlaylist.primary_artists) {
+      playlistMetadata.singers = parsePlaylist.fan_count;
+    }
     mongo.saveMetadata(playlistMetadata);
   }catch(err){
     console.log(`Error while parsing playlist ${playlistUrl}`);
