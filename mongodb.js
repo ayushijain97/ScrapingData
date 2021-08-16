@@ -81,6 +81,15 @@ async function saveMetadata(metadata){
     return playlistMetadata;
   }
 
+  async function saveMessage(message) {
+    // console.log(`Creating user : ${playlist}`);
+    const data = await client
+      .db("ayushi-music")
+      .collection("message")
+      .insertOne(message);
+    console.log(`Created Message successfully ${data}`);
+  }
+
 
 module.exports = {
   run,
@@ -90,4 +99,5 @@ module.exports = {
   deleteAllMetadata,
   fetchPlaylist,
   fetchPlaylistMetadata,
+  saveMessage
 };
