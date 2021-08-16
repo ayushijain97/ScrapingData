@@ -57,6 +57,12 @@ app.get("/api", async function(req, res) {
     console.log(req);
 })
 
+app.post("/message", async function( req , res){
+   const message = req.body;
+   console.log("Saving Contact Me Message",message);
+   mongo.saveMessage(message);
+   res.send("Contact Me Message saved successfully");
+} )
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
