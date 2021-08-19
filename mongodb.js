@@ -41,12 +41,12 @@ async function deleteAllPlaylist(playlist) {
 }
 // searchSongs
 async function searchSong(song){
-  console.log("searching of songs started");
+  console.log("Searching song with query ", song);
       const data = await client
-      .db("ayushi-music")
-      .collection("playlist")
-      .find({"name":"\"${song}\""})
-      .toArray();
+        .db("ayushi-music")
+        .collection("playlist")
+        .find({ name: new RegExp(song, "i") })
+        .toArray();
       console.log(data);
       return data ? data[0]:"NotFound";
       
