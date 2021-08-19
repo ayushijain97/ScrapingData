@@ -39,6 +39,18 @@ async function deleteAllPlaylist(playlist) {
     .deleteMany({});
   console.log(`Deleted all Playlists successfully ${data}`);
 }
+// searchSongs
+async function searchSong(song){
+  console.log("Searching song with query ", song);
+      const data = await client
+        .db("ayushi-music")
+        .collection("playlist")
+        .find({ name: new RegExp(song, "i") })
+        .toArray();
+      console.log(data);
+      return data ? data[0]:"NotFound";
+      
+}
 
 async function saveMetadata(metadata){
   // console.log(`getting user : ${userName}`);
@@ -99,5 +111,6 @@ module.exports = {
   deleteAllMetadata,
   fetchPlaylist,
   fetchPlaylistMetadata,
-  saveMessage
+  saveMessage,
+  searchSong,
 };

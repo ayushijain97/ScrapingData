@@ -63,6 +63,12 @@ app.post("/message", async function( req , res){
    mongo.saveMessage(message);
    res.send("Contact Me Message saved successfully");
 } )
+
+app.get("/playlist/search/:name", async function (req, res) {
+  const searchList = await mongo.searchSong(req.params.name);
+  res.send(searchList);
+});
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
