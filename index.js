@@ -64,7 +64,7 @@ app.post("/message", async function( req , res){
    res.send("Contact Me Message saved successfully");
 } )
 
-app.get("/playlist/search/:name", async function (req, res) {
+app.get("/music/search/:name", async function (req, res) {
   const searchList = await mongo.searchSong(req.params.name);
   res.send(searchList);
 });

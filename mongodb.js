@@ -45,7 +45,7 @@ async function searchSong(song){
       const data = await client
         .db("ayushi-music")
         .collection("playlist")
-        .find({ name: new RegExp(song, "i") })
+        .find({ "name": new RegExp(song, "i") })
         .toArray();
       console.log(data);
       return data ? data[0]:"NotFound";
