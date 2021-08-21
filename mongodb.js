@@ -41,15 +41,35 @@ async function deleteAllPlaylist(playlist) {
 }
 // searchSongs
 async function searchSong(song){
+  const projection = { playlistID: 1, _id: 0 };
   console.log("Searching song with query ", song);
-      const data = await client
-        .db("ayushi-music")
-        .collection("playlist")
-        .find({ "name": new RegExp(song, "i") })
-        .toArray();
-      console.log(data);
-      return data ? data[0]:"NotFound";
-      
+
+  // Collecting playlist records matching the query
+  let data = await client
+    .db("ayushi-music")
+    .collection("playlist")
+    .find({ name: new RegExp(song, "i") })
+    .project(projection)
+    .toArray();
+  console.log(data);
+   let mappedplaylist = data.map(function(val){
+        return val.playlistID;
+   })
+   console.log("mapped List",mappedplaylist);
+  // Now collecting meta-data for all playlist-id fetched in the above query
+
+  const songs = await client
+    .db("ayushi-music")
+    .collection("playlist-metadata")
+    .find({
+      playlistID: {
+        $in: mappedplaylist,
+      },
+    })
+    .toArray();
+  console.log(songs);
+
+  return songs ? songs[0] : "NotFound";
 }
 
 async function saveMetadata(metadata){
