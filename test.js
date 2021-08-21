@@ -3,7 +3,7 @@ app.get("/users/:userName", async function (req, res) {
   const user = await mongo.getUser(req.params.userName);
   return res.send(user);
 });
-
+// "name": new RegExp(song, "i")
 // Get all users
 app.get("/users", async function (req, res) {
   res.setHeader("Content-Type", "application/json");
