@@ -69,7 +69,7 @@ async function searchSong(song){
     .toArray();
   console.log(songs);
 
-  return songs ? songs[0] : "NotFound";
+  return songs ? songs : "NotFound";
 }
 
 async function saveMetadata(metadata){
